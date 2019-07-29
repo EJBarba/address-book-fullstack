@@ -1,0 +1,12 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: addressbook
+    ports:
+      - 5432:5432
+    volumes:
+      - addressbook:/var/lib/postgresql/data
+volumes:
+  addressbook:

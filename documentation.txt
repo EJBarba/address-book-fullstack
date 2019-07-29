@@ -1,0 +1,33 @@
+🐨 possible dependencies needed
+📖 some commands used
+
+
+FRONTEND
+
+
+
+BACKEND (Node.js)
+
+//tracking the project's dependencies
+📖 npm init -y
+
+//initialize express.js
+🐨 npm install --save express
+
+//using nodemon to watch our app for changes and
+//automatically reload files
+🐨 npm install -g nodemon
+📖 nodemon [server.js]
+
+//docker
+🐨 sudo apt install docker.io
+📖 sudo usermod -aG docker $USER
+📖 newgrp docker
+
+//a complimentary tool for docker
+🐨 docker-compose --version
+
+//node-pg-migrate (for proper migrations)
+🐨 npm install --save node-pg-migrate pg
+📖 npm run migrate up
+📖 npm run migrate create name-table
