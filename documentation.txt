@@ -26,8 +26,18 @@ BACKEND (Node.js)
 
 //a complimentary tool for docker
 🐨 docker-compose --version
+📖 docker-compose up -d db
 
 //node-pg-migrate (for proper migrations)
 🐨 npm install --save node-pg-migrate pg
 📖 npm run migrate up
 📖 npm run migrate create name-table
+
+//argon2
+🐨 npm install --save argon2
+
+//massive
+🐨 npm install --save massive
+
+//jwt
+🐨 npm install --save jsonwebtoken
