@@ -1,6 +1,7 @@
 const express = require("express");
 const massive = require("massive");
 const users = require("./controllers/users.js");
+const contact = require("./controllers/contact.js");
 
 massive({
   host: "localhost",
@@ -18,6 +19,11 @@ massive({
   app.get("/api/debug", users.debug);
   app.post("/api/register", users.register);
   app.post("/api/login", users.login);
+
+  app.post("/api/addcontact", contact.addContact);
+  app.patch("/api/editcontact", contact.editContact);
+  app.delete("/api/deletecontact", contact.deleteContact);
+  app.get("/api/searchcontact", contact.searchContact);
 
   app.listen(port, () => {
     console.log(`Server listening (0  0 3) on port: ${port}`);

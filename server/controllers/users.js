@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 function register(req, res) {
   const db = req.app.get("db");
-  const { username, email, password } = req.body;
+  const { username, password } = req.body;
 
   argon2
     .hash(password)
@@ -12,11 +12,10 @@ function register(req, res) {
       return db.users.insert(
         {
           username,
-          email,
           password: hash
         },
         {
-          fields: ["id", "username", "email"]
+          fields: ["id", "username"]
         }
       );
     })
@@ -40,7 +39,7 @@ function login(req, res) {
         username
       },
       {
-        fields: ["id", "username", "email", "password"]
+        fields: ["id", "username", "password"]
       }
     )
     .then(user => {
