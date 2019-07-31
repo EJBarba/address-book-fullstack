@@ -31,7 +31,14 @@ function addContact(req, res) {
         deepInsert: true // this option here tells massive to create the related object
       }
     )
-    .then(contact => res.status(201).json(contact))
+    .then(contact => {
+      //add reference to created contact to addressbook
+      db.addressbook.insert({
+        userId: req.query.userId,
+        contactId: contact.id
+      });
+      res.status(201).json(contact);
+    })
     .catch(err => {
       console.error(err);
     });

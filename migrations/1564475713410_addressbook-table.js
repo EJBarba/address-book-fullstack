@@ -7,14 +7,13 @@ exports.up = pgm => {
       primaryKey: true
     },
     userId: {
-      type: "text",
+      type: "integer",
       notNull: true,
       references: '"users"'
     },
-    contactName: {
-      type: "text",
-      notNull: true,
-      references: '"contacts"'
+    contactId: {
+      type: "integer",
+      references: '"contact"'
     }
   });
 };

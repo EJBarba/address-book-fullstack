@@ -12,10 +12,17 @@ function register(req, res) {
       return db.users.insert(
         {
           username,
-          password: hash
+          password: hash,
+          //on user register create addressbook with no contacts initialized
+          addressbook: [
+            {
+              userId: undefined,
+              contactId: null
+            }
+          ]
         },
         {
-          fields: ["id", "username"]
+          deepInsert: true
         }
       );
     })
