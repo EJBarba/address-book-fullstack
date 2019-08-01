@@ -1,5 +1,5 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
+import logo from "./../img/logo.png";
 
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
@@ -16,46 +16,60 @@ export default function LandingPage() {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      height: "100vh"
+      height: "100vh",
+      flexDirection: "column"
+    },
+    box: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#fff"
     },
     card: {
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
+      justifyContent: "flex-start",
       alignItems: "center",
       alignContent: "space-between",
       width: "500px",
-      height: "500px",
+      height: "700px",
       color: "#ED2553",
       fontSize: "50px",
       borderRadius: "25px",
       borderShadow: "5px 10px"
+    },
+    logo: {
+      margin: "50px 26px 26px"
+    },
+    textbox: {
+      margin: "10px",
+      width: "300px"
     }
   };
-  document.body.style.backgroundColor = "#222";
+  document.body.style.backgroundColor = "#eeeeef";
+
+  const [username, getUsername] = useState({ username: "" });
+  const [password, getPassword] = useState({ password: "" });
   return (
     <Container width={1} style={styles.container}>
-      <Card style={styles.card} boxShadow={10}>
-        <p>WELCOME</p>
+      <Card style={styles.card}>
+        <img src={logo} style={styles.logo} alt="logo" />
 
-        <FormControl>
-          <InputLabel htmlFor="my-input">Username</InputLabel>
-          <Input id="my-input" aria-describedby="my-helper-text" />
-          <FormHelperText id="my-helper-text">
-            “In order to be irreplaceable one must always <br /> be different.”
-            - Coco Chanel.
-          </FormHelperText>
+        <FormControl style={styles.textbox}>
+          <InputLabel>Username</InputLabel>
+          <Input id="username" />
+          <FormHelperText>Enter Your Username</FormHelperText>
         </FormControl>
 
-        <FormControl>
-          <InputLabel htmlFor="my-input">Password</InputLabel>
-          <Input id="my-input" aria-describedby="my-helper-text" />
-          <FormHelperText id="my-helper-text">
-            We'll never share your password.
-          </FormHelperText>
+        <FormControl style={styles.textbox}>
+          <InputLabel>Password</InputLabel>
+          <Input id="password" />
+          <FormHelperText>Enter Your Password</FormHelperText>
         </FormControl>
 
-        <Button variant="outlined">Login</Button>
+        <Button variant="outlined" style={styles.textbox}>
+          Login
+        </Button>
         <Button>No Account Yet? Sign Up</Button>
       </Card>
     </Container>

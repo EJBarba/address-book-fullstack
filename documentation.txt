@@ -3,7 +3,8 @@
 
 
 FRONTEND
-
+// material ui
+🐨 npm install @material-ui/core
 
 
 BACKEND (Node.js)
