@@ -1,5 +1,6 @@
 const express = require("express");
 const massive = require("massive");
+const cors = require("cors");
 const users = require("./controllers/users.js");
 const contact = require("./controllers/contact.js");
 
@@ -15,6 +16,7 @@ massive({
 
   app.set("db", db);
   app.use(express.json());
+  app.use(cors());
 
   app.get("/api/debug", users.debug);
   app.post("/api/register", users.register);

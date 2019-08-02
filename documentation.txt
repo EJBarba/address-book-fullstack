@@ -9,6 +9,9 @@ FRONTEND
 //Routing
 🐨 npm install --save react-router-dom
 
+//axios
+🐨 npm install axios --save
+
 
 BACKEND (Node.js)
 
@@ -45,3 +48,6 @@ BACKEND (Node.js)
 
 //jwt
 🐨 npm install --save jsonwebtoken
+
+// cors
+🐨 npm install cors --save

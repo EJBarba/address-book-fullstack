@@ -3,6 +3,7 @@ import { HashRouter, Route, Link, Redirect } from "react-router-dom";
 
 import logo from "./../img/logo.png";
 import backgroundImage from "./../img/background.jpg";
+import axios from "axios";
 
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
@@ -144,6 +145,13 @@ export default function LandingPage() {
       toggleFHT({ ...fhtError, password2RG: "Password must not be empty" });
       toggleRNE({ ...requiredNotEmpty, password2RG: true });
     }
+
+    axios
+      .post("http://localhost:3001/api/register", {
+        username: formVal.usernameRG,
+        password: formVal.password1RG
+      })
+      .then(data => console.log("data ->", data));
 
     e.preventDefault();
   }
