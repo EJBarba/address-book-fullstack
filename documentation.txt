@@ -6,6 +6,9 @@ FRONTEND
 // material ui
 🐨 npm install @material-ui/core
 
+//Routing
+🐨 npm install --save react-router-dom
+
 
 BACKEND (Node.js)
 

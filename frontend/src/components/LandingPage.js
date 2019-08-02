@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { HashRouter, Route, Link, Redirect } from "react-router-dom";
 
 import logo from "./../img/logo.png";
 import backgroundImage from "./../img/background.jpg";
@@ -9,7 +10,7 @@ import { FormControl } from "@material-ui/core";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import FormHelperText from "@material-ui/core/FormHelperText";
-
+import Collapse from "@material-ui/core/Collapse";
 import Button from "@material-ui/core/Button";
 
 export default function LandingPage() {
@@ -57,86 +58,253 @@ export default function LandingPage() {
       margin: "50px 26px 26px"
     },
     textbox: {
-      margin: "10px",
+      margin: "5px 10px",
       width: "300px"
     }
   };
   document.body.style.background = `url(${backgroundImage}) no-repeat center center`;
   document.body.style.backgroundSize = "100% 100%";
-  const [username, getUsername] = useState("");
-  const [password, getPassword] = useState("");
 
-  //required highlights
-  const [isRequiredUsername, toggleRequiredUsername] = useState(false);
-  const [isRequiredPassword, toggleRequiredPassword] = useState(false);
+  //toggle Login/Signup
+  const [currentForm, toggleForm] = useState(true);
 
-  //show FormHelperText if empty text field
-  const [formHelperUsername, toggleFHU] = useState("");
-  const [formHelperPassword, toggleFHP] = useState("");
-
-  useEffect(() => {
-    if (username.length > 0) {
-      toggleRequiredUsername(false);
-    }
-    if (password.length > 0) {
-      toggleRequiredPassword(false);
-    }
+  ///////////////Register/////////////////////
+  const [formVal, setVal] = useState({
+    //login values
+    usernameLG: "",
+    passwordLG: "",
+    //registration values
+    usernameRG: "",
+    password1RG: "",
+    password2RG: ""
+  });
+  //input turns red
+  const [requiredNotEmpty, toggleRNE] = useState({
+    usernameLG: false,
+    passwordLG: false,
+    usernameRG: false,
+    password1RG: false,
+    password2RG: false
+  });
+  //show formHelperText if empty
+  const [fhtError, toggleFHT] = useState({
+    usernameLG: "",
+    passwordLG: "",
+    usernameRG: "",
+    password1RG: "",
+    password2RG: ""
   });
 
-  function getAll(e) {
-    console.log(username);
-    console.log(password);
-    if (!username) {
-      toggleRequiredUsername(true);
-      toggleFHU("Please Enter Your Username");
+  const addRegisterVal = e => {
+    setVal({ ...formVal, [e.target.name]: e.target.value });
+    console.log(formVal);
+  };
+
+  function handleLogin(e) {
+    console.log(
+      "usernameLG->",
+      formVal.usernameLG,
+      "passwordLG->",
+      formVal.passwordLG
+    );
+
+    //ALL SHOULD FIRE WHEN  EMPTY, but only last if statement fires
+    //BUG
+    if (!formVal.usernameLG) {
+      toggleFHT({ ...fhtError, usernameLG: "Username must not be empty" });
+      toggleRNE({ ...requiredNotEmpty, usernameLG: true });
     }
-    if (!password) {
-      toggleRequiredPassword(true);
-      toggleFHP("Please Enter Your Password");
+    if (!formVal.passwordLG) {
+      toggleFHT({ ...fhtError, passwordLG: "Password must not be empty" });
+      toggleRNE({ ...requiredNotEmpty, passwordLG: true });
     }
     e.preventDefault();
   }
+  function handleRegister(e) {
+    console.log(
+      "usernameRG->",
+      formVal.usernameRG,
+      "password1RG->",
+      formVal.password1RG,
+      "password2RG->",
+      formVal.password2RG
+    );
+
+    //ALL SHOULD FIRE WHEN  EMPTY, but only last if statement fires
+    //BUG
+    if (!formVal.usernameRG) {
+      toggleFHT({ ...fhtError, usernameRG: "Username must not be empty" });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: true });
+    }
+    if (!formVal.password1RG) {
+      toggleFHT({ ...fhtError, password1RG: "Password must not be empty" });
+      toggleRNE({ ...requiredNotEmpty, password1RG: true });
+    }
+    if (!formVal.password2RG) {
+      toggleFHT({ ...fhtError, password2RG: "Password must not be empty" });
+      toggleRNE({ ...requiredNotEmpty, password2RG: true });
+    }
+
+    e.preventDefault();
+  }
+
+  useEffect(() => {
+    //Login
+    if (formVal.usernameRG.length > 0) {
+      toggleFHT({ ...fhtError, usernameRG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: false });
+    }
+    if (formVal.passwordLG.length > 0) {
+      toggleFHT({ ...fhtError, passwordLG: "" });
+      toggleRNE({ ...requiredNotEmpty, passwordLG: false });
+    }
+
+    //Register
+    if (formVal.usernameRG.length > 0) {
+      toggleFHT({ ...fhtError, usernameRG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: false });
+    }
+    if (formVal.password1RG.length > 0) {
+      toggleFHT({ ...fhtError, password1RG: "" });
+      toggleRNE({ ...requiredNotEmpty, password1RG: false });
+    }
+    if (formVal.password2RG.length > 0) {
+      toggleFHT({ ...fhtError, password2RG: "" });
+      toggleRNE({ ...requiredNotEmpty, password2RG: false });
+    }
+
+    //equivalent to componentWillUnmount
+    // return () => {
+    //   document.body.style.background = null;
+    // };
+  });
+
+  function changeForm() {
+    toggleForm(!currentForm);
+  }
+
   return (
     <Container width={1} style={styles.container}>
       <Card style={styles.card}>
         <img src={logo} style={styles.logo} alt="logo" />
 
-        <form style={styles.form} onSubmit={getAll}>
-          <FormControl style={styles.textbox}>
-            <InputLabel error={isRequiredUsername}>Username</InputLabel>
-            <Input
-              error={isRequiredUsername}
-              id="username"
-              value={username}
-              onChange={e => {
-                getUsername(e.target.value);
-              }}
-            />
-            <FormHelperText error={isRequiredUsername}>
-              {formHelperUsername}
-            </FormHelperText>
-          </FormControl>
+        {/*---------------- LOGIN -------------------------*/}
+        <Collapse in={currentForm}>
+          <form style={styles.form} onSubmit={handleLogin}>
+            {/* USERNAME */}
+            <FormControl
+              error={requiredNotEmpty.usernameLG}
+              style={styles.textbox}
+            >
+              <InputLabel>Username</InputLabel>
+              <Input
+                id="usernameLG"
+                name="usernameLG"
+                value={formVal.usernameLG}
+                onChange={e => {
+                  addRegisterVal(e);
+                }}
+              />
+              <FormHelperText error={requiredNotEmpty.usernameLG}>
+                {fhtError.usernameLG}
+              </FormHelperText>
+            </FormControl>
 
-          <FormControl style={styles.textbox}>
-            <InputLabel error={isRequiredPassword}>Password</InputLabel>
-            <Input
-              error={isRequiredPassword}
-              type="password"
-              id="password"
-              value={password}
-              onChange={e => getPassword(e.target.value)}
-            />
-            <FormHelperText error={isRequiredPassword}>
-              {formHelperPassword}
-            </FormHelperText>
-          </FormControl>
+            {/* PASSWORD */}
+            <FormControl
+              error={requiredNotEmpty.passwordLG}
+              style={styles.textbox}
+            >
+              <InputLabel>Password</InputLabel>
+              <Input
+                type="password"
+                id="passwordLG"
+                name="passwordLG"
+                value={formVal.passwordLG}
+                onChange={e => {
+                  addRegisterVal(e);
+                }}
+              />
+              <FormHelperText error={requiredNotEmpty.passwordLG}>
+                {fhtError.passwordLG}
+              </FormHelperText>
+            </FormControl>
 
-          <Button variant="outlined" style={styles.textbox} type="submit">
-            Login
-          </Button>
-        </form>
+            <Button variant="outlined" style={styles.textbox} type="submit">
+              LOGIN
+            </Button>
+            <Button onClick={changeForm}>Don't Have an Account? Sign Up</Button>
+          </form>
+        </Collapse>
 
-        <Button>No Account Yet? Sign Up</Button>
+        {/*////////////////// Register //////////////////////////*/}
+        <Collapse in={!currentForm}>
+          <form style={styles.form} onSubmit={handleRegister}>
+            {/* USERNAME */}
+            <FormControl
+              error={requiredNotEmpty.usernameRG}
+              style={styles.textbox}
+            >
+              <InputLabel>Username</InputLabel>
+              <Input
+                id="usernameRG"
+                name="usernameRG"
+                value={formVal.usernameRG}
+                onChange={e => {
+                  addRegisterVal(e);
+                }}
+              />
+              <FormHelperText error={requiredNotEmpty.usernameRG}>
+                {fhtError.usernameRG}
+              </FormHelperText>
+            </FormControl>
+
+            {/* PASSWORD1 */}
+            <FormControl
+              error={requiredNotEmpty.password1RG}
+              style={styles.textbox}
+            >
+              <InputLabel>Password</InputLabel>
+              <Input
+                type="password"
+                id="password1RG"
+                name="password1RG"
+                value={formVal.password1RG}
+                onChange={e => {
+                  addRegisterVal(e);
+                }}
+              />
+              <FormHelperText error={requiredNotEmpty.password1RG}>
+                {fhtError.password1RG}
+              </FormHelperText>
+            </FormControl>
+
+            {/* PASSWORD2 */}
+            <FormControl
+              error={requiredNotEmpty.password2RG}
+              style={styles.textbox}
+            >
+              <InputLabel>Re-Enter Password</InputLabel>
+              <Input
+                type="password"
+                id="password2RG"
+                name="password2RG"
+                value={formVal.password2RG}
+                onChange={e => {
+                  addRegisterVal(e);
+                }}
+              />
+              <FormHelperText error={requiredNotEmpty.password2RG}>
+                {fhtError.password2RG}
+              </FormHelperText>
+            </FormControl>
+
+            <Button variant="outlined" style={styles.textbox} type="submit">
+              Register
+            </Button>
+            <Button onClick={changeForm}>Have an Account? Login</Button>
+          </form>
+        </Collapse>
       </Card>
     </Container>
   );
