@@ -108,17 +108,28 @@ export default function LandingPage() {
       "passwordLG->",
       formVal.passwordLG
     );
-
-    //ALL SHOULD FIRE WHEN  EMPTY, but only last if statement fires
-    //BUG
-    if (!formVal.usernameLG) {
-      toggleFHT({ ...fhtError, usernameLG: "Username must not be empty" });
+    if (!formVal.usernameLG && !formVal.passwordLG) {
+      toggleFHT({
+        ...fhtError,
+        usernameLG: "Username must not be empty",
+        passwordLG: "Password must not be empty"
+      });
+      toggleRNE({ ...requiredNotEmpty, usernameLG: true, passwordLG: true });
+    } else if (!formVal.usernameLG) {
+      toggleFHT({
+        ...fhtError,
+        usernameLG: "Username must not be empty"
+      });
       toggleRNE({ ...requiredNotEmpty, usernameLG: true });
-    }
-    if (!formVal.passwordLG) {
-      toggleFHT({ ...fhtError, passwordLG: "Password must not be empty" });
+    } else if (!formVal.passwordLG) {
+      toggleFHT({
+        ...fhtError,
+        passwordLG: "Password must not be empty"
+      });
       toggleRNE({ ...requiredNotEmpty, passwordLG: true });
+    } else {
     }
+
     e.preventDefault();
   }
   function handleRegister(e) {
@@ -158,13 +169,17 @@ export default function LandingPage() {
 
   useEffect(() => {
     //Login
-    if (formVal.usernameRG.length > 0) {
-      toggleFHT({ ...fhtError, usernameRG: "" });
-      toggleRNE({ ...requiredNotEmpty, usernameRG: false });
+    if (formVal.usernameLG.length > 0) {
+      toggleFHT({ ...fhtError, usernameLG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameLG: false });
     }
     if (formVal.passwordLG.length > 0) {
       toggleFHT({ ...fhtError, passwordLG: "" });
       toggleRNE({ ...requiredNotEmpty, passwordLG: false });
+    }
+    if (formVal.usernameLG.length > 0 && formVal.passwordLG.length > 0) {
+      toggleFHT({ ...fhtError, usernameLG: "", passwordLG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameLG: false, passwordLG: false });
     }
 
     //Register
