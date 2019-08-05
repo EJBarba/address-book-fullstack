@@ -128,6 +128,16 @@ export default function LandingPage() {
       });
       toggleRNE({ ...requiredNotEmpty, passwordLG: true });
     } else {
+      //axios here
+      axios
+        .post("http://localhost:3001/api/login", {
+          username: formVal.usernameLG,
+          password: formVal.passwordLG
+        })
+        .then(data => {
+          console.log("data ->", data);
+        });
+      //go to home
     }
 
     e.preventDefault();
@@ -142,28 +152,71 @@ export default function LandingPage() {
       formVal.password2RG
     );
 
-    //ALL SHOULD FIRE WHEN  EMPTY, but only last if statement fires
-    //BUG
-    if (!formVal.usernameRG) {
-      toggleFHT({ ...fhtError, usernameRG: "Username must not be empty" });
-      toggleRNE({ ...requiredNotEmpty, usernameRG: true });
+    //All Textboxes
+    if (!formVal.usernameRG && !formVal.password1RG && !formVal.password2RG) {
+      toggleFHT({
+        ...fhtError,
+        usernameRG: "Username must not be empty",
+        password1RG: "Password must not be empty",
+        password2RG: "Please confirm password"
+      });
+      toggleRNE({
+        ...requiredNotEmpty,
+        usernameRG: true,
+        password1RG: true,
+        password2RG: true
+      });
     }
-    if (!formVal.password1RG) {
+    //First and Second TextBox
+    else if (!formVal.usernameRG && !formVal.password1RG) {
+      toggleFHT({
+        ...fhtError,
+        usernameRG: "Username must not be empty",
+        password1RG: "Password must not be empty"
+      });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: true, password1RG: true });
+    }
+    //First and Third Textbox
+    else if (!formVal.usernameRG && !formVal.password2RG) {
+      toggleFHT({
+        ...fhtError,
+        usernameRG: "Username must not be empty",
+        password2RG: "Please confirm password"
+      });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: true, password2RG: true });
+    }
+    //Second and Third Textbox
+    else if (!formVal.usernameRG && !formVal.password2RG) {
+      toggleFHT({
+        ...fhtError,
+        password1RG: "Password must not be empty",
+        password2RG: "Please confirm password"
+      });
+      toggleRNE({ ...requiredNotEmpty, password1RG: true, password2RG: true });
+    } else if (!formVal.usernameRG) {
+      toggleFHT({
+        ...fhtError,
+        usernameRG: "Username must not be empty"
+      });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: true });
+    } else if (!formVal.password1RG) {
       toggleFHT({ ...fhtError, password1RG: "Password must not be empty" });
       toggleRNE({ ...requiredNotEmpty, password1RG: true });
-    }
-    if (!formVal.password2RG) {
-      toggleFHT({ ...fhtError, password2RG: "Password must not be empty" });
+    } else if (!formVal.password2RG) {
+      toggleFHT({ ...fhtError, password2RG: "Please confirm password" });
       toggleRNE({ ...requiredNotEmpty, password2RG: true });
+    } else {
+      axios
+        .post("http://localhost:3001/api/register", {
+          username: formVal.usernameRG,
+          password: formVal.password1RG
+        })
+        .then(data => {
+          console.log("data ->", data);
+        });
+      alert("Registered Successfully");
+      changeForm();
     }
-
-    axios
-      .post("http://localhost:3001/api/register", {
-        username: formVal.usernameRG,
-        password: formVal.password1RG
-      })
-      .then(data => console.log("data ->", data));
-
     e.preventDefault();
   }
 
@@ -194,6 +247,43 @@ export default function LandingPage() {
     if (formVal.password2RG.length > 0) {
       toggleFHT({ ...fhtError, password2RG: "" });
       toggleRNE({ ...requiredNotEmpty, password2RG: false });
+    }
+    //First and Second Textbox
+    if (formVal.usernameRG.length > 0 && formVal.password1RG.length > 0) {
+      toggleFHT({ ...fhtError, usernameRG: "", password1RG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: false, password1RG: false });
+    }
+    //First and Third Textbox
+    if (formVal.usernameRG.length > 0 && formVal.password2RG.length > 0) {
+      toggleFHT({ ...fhtError, usernameRG: "", password2RG: "" });
+      toggleRNE({ ...requiredNotEmpty, usernameRG: false, password2RG: false });
+    }
+    //Second and Third Textbox
+    if (formVal.password1RG.length > 0 && formVal.password2RG.length > 0) {
+      toggleFHT({ ...fhtError, password1RG: "", password2RG: "" });
+      toggleRNE({
+        ...requiredNotEmpty,
+        password1RG: false,
+        password2RG: false
+      });
+    }
+    if (
+      formVal.usernameRG.length > 0 &&
+      formVal.password1RG.length > 0 &&
+      formVal.password2RG.length > 0
+    ) {
+      toggleFHT({
+        ...fhtError,
+        usernameRG: "",
+        password1RG: "",
+        password2RG: ""
+      });
+      toggleRNE({
+        ...requiredNotEmpty,
+        usernameRG: false,
+        password1RG: false,
+        password2RG: false
+      });
     }
 
     //equivalent to componentWillUnmount
