@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { HashRouter, Route, Link, Redirect } from "react-router-dom";
-
+import UserContext from "./../context/UserContext";
 import logo from "./../img/logo.png";
 import backgroundImage from "./../img/background.jpg";
 import axios from "axios";
@@ -66,6 +66,8 @@ export default function LandingPage() {
   document.body.style.background = `url(${backgroundImage}) no-repeat center center`;
   document.body.style.backgroundSize = "100% 100%";
 
+  const { loggedIn, handleLoggedIn } = useContext(UserContext);
+  const [isAuth, handleAuth] = useState(false);
   //toggle Login/Signup
   const [currentForm, toggleForm] = useState(true);
 
@@ -134,10 +136,22 @@ export default function LandingPage() {
           username: formVal.usernameLG,
           password: formVal.passwordLG
         })
-        .then(data => {
-          console.log("data ->", data);
+        .then(res => {
+          console.log("data ->", res.data);
+          let token = res.data.token;
+          let tokenObject = { Authorization: `Bearer ${token}` };
+          res.headers = { ...res.headers, ...tokenObject };
+          console.log("headers -> ", res.headers);
+          axios
+            .get("http://localhost:3001/api/debug", { headers: tokenObject })
+            .then(res => {
+              console.log(res);
+              handleAuth(true);
+              console.log("AUTH axious--> ", isAuth);
+            });
         });
       //go to home
+      console.log("AUTHhhhhhhhhhhh--> ", isAuth);
     }
 
     e.preventDefault();
