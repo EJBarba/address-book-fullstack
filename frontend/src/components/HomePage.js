@@ -5,5 +5,12 @@ import UserContext from "./../context/UserContext";
 export default function HomePage() {
   //document.body.style.backgroundSize = "100% 100%";
   const { loggedIn, handleLoggedIn } = useContext(UserContext);
-  return !loggedIn ? <Redirect to="/" /> : <Link to="/">Landing</Link>;
+  console.log(loggedIn);
+  return !loggedIn ? (
+    <Redirect to="/redirect" />
+  ) : (
+    <div>
+      <button onClick={() => handleLoggedIn(false)}>Logout</button>
+    </div>
+  );
 }

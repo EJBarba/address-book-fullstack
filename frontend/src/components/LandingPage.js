@@ -147,6 +147,7 @@ export default function LandingPage() {
             .then(res => {
               console.log(res);
               handleAuth(true);
+              handleLoggedIn(true);
               console.log("AUTH axious--> ", isAuth);
             });
         });
@@ -310,7 +311,9 @@ export default function LandingPage() {
     toggleForm(!currentForm);
   }
 
-  return (
+  return loggedIn ? (
+    <Redirect to="/home" />
+  ) : (
     <Container width={1} style={styles.container}>
       <Card style={styles.card}>
         <img src={logo} style={styles.logo} alt="logo" />
