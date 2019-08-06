@@ -34,8 +34,8 @@ function addContact(req, res) {
     .then(contact => {
       //add reference to created contact to addressbook
       db.addressbook.insert({
-        userId: req.query.userId,
-        contactId: contact.id
+        userid: req.query.userId,
+        contactid: contact.id
       });
       res.status(201).json(contact);
     })

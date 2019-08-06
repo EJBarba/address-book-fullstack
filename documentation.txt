@@ -6,6 +6,8 @@ FRONTEND
 // material ui
 🐨 npm install @material-ui/core
 
+//icons
+npm install --save material-ui-icons
 //Routing
 🐨 npm install --save react-router-dom
 

@@ -27,8 +27,8 @@ function register(req, res) {
                 //on user register create addressbook with no contacts initialized
                 addressbook: [
                   {
-                    userId: undefined,
-                    contactId: null
+                    userid: undefined,
+                    contactid: null
                   }
                 ]
               },
@@ -38,7 +38,7 @@ function register(req, res) {
             );
           })
           .then(user => {
-            const token = jwt.sign({ userId: user.id }, secret); // adding token generation
+            const token = jwt.sign({ userid: user.id }, secret); // adding token generation
             res.status(201).json({ ...user, token });
           })
           .catch(err => {
@@ -84,7 +84,7 @@ function login(req, res) {
           throw new Error("Incorrect password");
         }
 
-        const token = jwt.sign({ userId: user.id }, secret);
+        const token = jwt.sign({ userid: user.id }, secret);
         delete user.password; // remove password hash from returned user object
         res.status(200).json({ ...user, token });
       });

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { HashRouter, Route, Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import UserContext from "./../context/UserContext";
 import logo from "./../img/logo.png";
 import backgroundImage from "./../img/background.jpg";
@@ -63,10 +63,12 @@ export default function LandingPage() {
       width: "300px"
     }
   };
-  document.body.style.background = `url(${backgroundImage}) no-repeat center center`;
-  document.body.style.backgroundSize = "100% 100%";
+  document.body.style.background = `url(${backgroundImage}) no-repeat  center`;
+  document.body.style.backgroundSize = "cover";
 
-  const { loggedIn, handleLoggedIn } = useContext(UserContext);
+  const { loggedIn, handleLoggedIn, user, handleUser } = useContext(
+    UserContext
+  );
   const [isAuth, handleAuth] = useState(false);
   //toggle Login/Signup
   const [currentForm, toggleForm] = useState(true);
@@ -138,6 +140,9 @@ export default function LandingPage() {
         })
         .then(res => {
           console.log("data ->", res.data);
+          console.log("before", user);
+          handleUser(res.data);
+          console.log("after", user);
           let token = res.data.token;
           let tokenObject = { Authorization: `Bearer ${token}` };
           res.headers = { ...res.headers, ...tokenObject };
