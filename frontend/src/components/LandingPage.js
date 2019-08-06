@@ -204,7 +204,7 @@ export default function LandingPage() {
       toggleRNE({ ...requiredNotEmpty, usernameRG: true, password2RG: true });
     }
     //Second and Third Textbox
-    else if (!formVal.usernameRG && !formVal.password2RG) {
+    else if (!formVal.password1RG && !formVal.password2RG) {
       toggleFHT({
         ...fhtError,
         password1RG: "Password must not be empty",
@@ -223,6 +223,8 @@ export default function LandingPage() {
     } else if (!formVal.password2RG) {
       toggleFHT({ ...fhtError, password2RG: "Please confirm password" });
       toggleRNE({ ...requiredNotEmpty, password2RG: true });
+    } else if (formVal.password1RG !== formVal.password2RG) {
+      alert("Passwords do not match");
     } else {
       axios
         .post("http://localhost:3001/api/register", {
@@ -231,9 +233,13 @@ export default function LandingPage() {
         })
         .then(data => {
           console.log("data ->", data);
+          alert("Registered Successfully");
+          changeForm();
+        })
+        .catch(error => {
+          // Error 😨
+          alert(error.response.data.error);
         });
-      alert("Registered Successfully");
-      changeForm();
     }
     e.preventDefault();
   }

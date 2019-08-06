@@ -6,33 +6,56 @@ function register(req, res) {
   const db = req.app.get("db");
   const { username, password } = req.body;
 
-  argon2
-    .hash(password)
-    .then(hash => {
-      return db.users.insert(
-        {
-          username,
-          password: hash,
-          //on user register create addressbook with no contacts initialized
-          addressbook: [
-            {
-              userId: undefined,
-              contactId: null
-            }
-          ]
-        },
-        {
-          deepInsert: true
-        }
-      );
-    })
+  db.users
+    .findOne(
+      {
+        username
+      },
+      {
+        fields: ["id", "username", "password"]
+      }
+    )
     .then(user => {
-      const token = jwt.sign({ userId: user.id }, secret); // adding token generation
-      res.status(201).json({ ...user, token });
+      if (!user) {
+        argon2
+          .hash(password)
+          .then(hash => {
+            return db.users.insert(
+              {
+                username,
+                password: hash,
+                //on user register create addressbook with no contacts initialized
+                addressbook: [
+                  {
+                    userId: undefined,
+                    contactId: null
+                  }
+                ]
+              },
+              {
+                deepInsert: true
+              }
+            );
+          })
+          .then(user => {
+            const token = jwt.sign({ userId: user.id }, secret); // adding token generation
+            res.status(201).json({ ...user, token });
+          })
+          .catch(err => {
+            console.error(err);
+            res.status(500).end();
+          });
+      } else {
+        throw new Error("Username already taken");
+      }
     })
     .catch(err => {
-      console.error(err);
-      res.status(500).end();
+      if (["Username not available"].includes(err.message)) {
+        res.status(400).json({ error: err.message });
+      } else {
+        console.error(err);
+        res.status(500).end();
+      }
     });
 }
 
