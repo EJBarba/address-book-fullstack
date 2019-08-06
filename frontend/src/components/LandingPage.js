@@ -149,10 +149,13 @@ export default function LandingPage() {
               handleAuth(true);
               handleLoggedIn(true);
               console.log("AUTH axious--> ", isAuth);
-            });
+            })
+            .catch(error => console.log(error));
+        })
+        .catch(error => {
+          // Error 😨
+          alert(error.response.data.error);
         });
-      //go to home
-      console.log("AUTHhhhhhhhhhhh--> ", isAuth);
     }
 
     e.preventDefault();
