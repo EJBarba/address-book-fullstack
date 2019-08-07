@@ -26,6 +26,7 @@ massive({
   app.patch("/api/editcontact", contact.editContact);
   app.delete("/api/deletecontact", contact.deleteContact);
   app.get("/api/searchcontact", contact.searchContact);
+  app.get("/api/getallcontacts", contact.getAllContacts);
 
   app.listen(port, () => {
     console.log(`Server listening (0  0 3) on port: ${port}`);

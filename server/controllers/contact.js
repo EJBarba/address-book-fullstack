@@ -82,9 +82,20 @@ function searchContact(req, res) {
     });
 }
 
+function getAllContacts(req, res) {
+  const db = req.app.get("db");
+  db.query(
+    "select * from addressbook,contact where addressbook.userid = $1 and addressbook.contactid is not null and contact.id = addressbook.contactid",
+    [req.query.userId]
+  )
+    .then(data => res.status(200).json(data))
+    .catch(err => console.log(err));
+}
+
 module.exports = {
   addContact,
   editContact,
   deleteContact,
-  searchContact
+  searchContact,
+  getAllContacts
 };

@@ -28,7 +28,9 @@ export default function AddContactDialog() {
     }
   };
 
-  const { handleContact, user } = useContext(AddContactContext);
+  const { handleContact, user, handleDialog, handleAllContacts } = useContext(
+    AddContactContext
+  );
   const [val, setVal] = useState({
     firstName: "",
     lastName: "",
@@ -62,6 +64,17 @@ export default function AddContactDialog() {
       })
       .then(res => {
         console.log("axios ->", res.data);
+        //close dialog on submit
+        handleDialog(false);
+      })
+      .catch(err => console.log(err));
+
+    axios
+      .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
+      .then(res => {
+        console.log("DATTTA", res.data);
+        handleAllContacts(res.data);
+        console.log("USERR", user);
       })
       .catch(err => console.log(err));
     e.preventDefault();
