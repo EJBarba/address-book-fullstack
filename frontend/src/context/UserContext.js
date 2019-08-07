@@ -1,3 +1,4 @@
 import { createContext } from "react";
 const UserContext = createContext(false);
-export default UserContext;
+const AddContactContext = createContext();
+export { UserContext, AddContactContext };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Redirect } from "react-router-dom";
-import UserContext from "./../context/UserContext";
+import { UserContext } from "./../context/UserContext";
 import logo from "./../img/logo.png";
 import backgroundImage from "./../img/background.jpg";
 import axios from "axios";
