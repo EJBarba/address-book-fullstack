@@ -48,9 +48,7 @@ export default function HomePage() {
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
   });
-  const { loggedIn, handleLoggedIn, user, handleUser } = useContext(
-    UserContext
-  );
+  const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
   console.log(loggedIn);
   console.log(user);
   return !loggedIn ? (
@@ -65,7 +63,12 @@ export default function HomePage() {
             color="inherit"
             aria-label="menu"
           >
-            <PersonAdd onClick={() => handleModal(true)} />
+            <PersonAdd
+              onClick={() => {
+                console.log("from homepage", addContact);
+                handleModal(true);
+              }}
+            />
           </IconButton>
           <Typography variant="h6">Welcome, {user.username}!</Typography>
           <Button color="inherit" onClick={() => handleLoggedIn(false)}>
@@ -110,7 +113,7 @@ export default function HomePage() {
         open={expandModal}
         onClose={() => handleModal(false)}
       >
-        <AddContactContext.Provider value={{ addContact, handleContact }}>
+        <AddContactContext.Provider value={{ handleContact, user }}>
           <AddContactDialog />
         </AddContactContext.Provider>
       </Dialog>

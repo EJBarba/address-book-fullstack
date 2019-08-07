@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-
+import axios from "axios";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
@@ -28,7 +28,7 @@ export default function AddContactDialog() {
     }
   };
 
-  const { addContact, handleContact } = useContext(AddContactContext);
+  const { handleContact, user } = useContext(AddContactContext);
   const [val, setVal] = useState({
     firstName: "",
     lastName: "",
@@ -41,11 +41,29 @@ export default function AddContactDialog() {
     country: ""
   });
   const addVal = e => {
-    console.log("hey");
     setVal({ ...val, [e.target.name]: e.target.value });
   };
   function handleForm(e) {
-    console.log(val);
+    console.log("from dialog", val, user);
+    handleContact(val);
+
+    //axios
+    axios
+      .post(`http://localhost:3001/api/addcontact?userId=${user.id}`, {
+        first_name: val.firstName,
+        last_name: val.lastName,
+        home_phone: val.homePhone,
+        work_phone: val.workPhone,
+        email: val.email,
+        city: val.city,
+        state_or_province: val.stateOrProvince,
+        postal_code: val.postalCode,
+        country: val.country
+      })
+      .then(res => {
+        console.log("axios ->", res.data);
+      })
+      .catch(err => console.log(err));
     e.preventDefault();
   }
   return (
@@ -55,7 +73,7 @@ export default function AddContactDialog() {
       <form style={styles.form} onSubmit={handleForm}>
         <TextField
           required
-          label=" First Name"
+          label="First Name"
           name="firstName"
           value={val.firstName}
           onChange={e => {
@@ -65,9 +83,72 @@ export default function AddContactDialog() {
         />
         <TextField
           required
-          label=" Last Name"
+          label="Last Name"
           name="lastName"
           value={val.lastName}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Home Phone"
+          name="homePhone"
+          value={val.homePhone}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Work Phone"
+          name="workPhone"
+          value={val.workPhone}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Email"
+          name="email"
+          value={val.email}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="City"
+          name="city"
+          value={val.city}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="State or Province"
+          name="stateOrProvince"
+          value={val.stateOrProvince}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Postal Code"
+          name="postalCode"
+          value={val.postalCode}
+          onChange={e => {
+            addVal(e);
+          }}
+          margin="normal"
+        />
+        <TextField
+          label="Country"
+          name="country"
+          value={val.country}
           onChange={e => {
             addVal(e);
           }}
