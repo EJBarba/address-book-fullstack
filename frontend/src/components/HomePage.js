@@ -44,7 +44,6 @@ export default function HomePage() {
 
   //hooks
 
-  const [expandBtn, handeExpandBtn] = useState(false);
   const [expandDialog, handleDialog] = useState(false);
   const [addContact, handleContact] = useState({});
   const [contacts, handleAllContacts] = useState([]);
@@ -88,6 +87,39 @@ export default function HomePage() {
 
   console.log(loggedIn);
   console.log(user);
+
+  //DELETE CARD
+  function deleteContact(userid, first_name, last_name) {
+    axios
+      .delete("http://localhost:3001/api/deletecontact", {
+        data: {
+          userid: userid,
+          first_name: first_name,
+          last_name: last_name
+        }
+      })
+      .then(data => {
+        console.log(data);
+        axios
+          .get(`http://localhost:3001/api/getallcontacts?userId=${userid}`)
+          .then(res => {
+            let newObj = res.data;
+            //add toggle to each object
+            newObj.map(e => {
+              if (!e.toggle) {
+                e.toggle = false;
+              }
+            });
+            console.log("NEWOBJECT", newObj);
+            handleAllContacts(newObj);
+            //console.log("DUURING");
+            //console.log("USERR", user);
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }
+
   return !loggedIn ? (
     <Redirect to="/redirect" />
   ) : (
@@ -144,6 +176,24 @@ export default function HomePage() {
                   <CardContent>
                     <Typography>{user.first_name}</Typography>
                     <Typography>{user.last_name}</Typography>
+                    <Button>EDIT</Button>
+                    <Button
+                      onClick={() => {
+                        console.log("DELETE WITH DATA");
+                        console.log(
+                          user.userid,
+                          user.first_name,
+                          user.last_name
+                        );
+                        deleteContact(
+                          user.userid,
+                          user.first_name,
+                          user.last_name
+                        );
+                      }}
+                    >
+                      DELETE
+                    </Button>
                   </CardContent>
                 </Collapse>
               </Card>

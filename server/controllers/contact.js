@@ -60,14 +60,23 @@ function editContact(req, res) {
 function deleteContact(req, res) {
   const db = req.app.get("db");
 
-  //delete post
-  db.contact
-    .destroy(req.query)
-    .then(contact => res.status(200).json(contact))
-    .catch(err => {
-      console.error(err);
-      res.status(500).end();
-    });
+  const { userid, first_name, last_name } = req.body;
+
+  db.query(
+    `
+  Delete from addressbook as a using contact as c where a.userid = ${userid}
+  and a.contactid is not null
+  and c.id = a.contactid
+  and c.first_name = '${first_name}'
+  and c.last_name = '${last_name}';
+  
+  Delete from contact where first_name = '${first_name}'
+  and last_name = '${last_name}';
+  
+  `
+  )
+    .then(data => res.status(200).json(data))
+    .catch(err => console.log(err));
 }
 
 function searchContact(req, res) {
