@@ -49,7 +49,7 @@ function editContact(req, res) {
 
   //update post
   db.contact
-    .update(req.query, req.body)
+    .update(req.body.contactid, req.body)
     .then(contact => res.status(200).json(contact))
     .catch(err => {
       console.error(err);

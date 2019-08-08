@@ -20,7 +20,11 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import Dialog from "@material-ui/core/Dialog";
 import AddContactDialog from "./AddContactDialog";
-import { AddContactContext } from "./../context/UserContext";
+import EditContactDialog from "./EditContactDialog";
+import {
+  AddContactContext,
+  EditContactContext
+} from "./../context/UserContext";
 
 export default function HomePage() {
   //styling
@@ -45,7 +49,9 @@ export default function HomePage() {
   //hooks
 
   const [expandDialog, handleDialog] = useState(false);
+  const [expandDialogEdit, handleDialogEdit] = useState(false);
   const [addContact, handleContact] = useState({});
+  const [editContact, handleEditContact] = useState();
   const [contacts, handleAllContacts] = useState([]);
 
   const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
@@ -174,17 +180,30 @@ export default function HomePage() {
                 />
                 <Collapse in={user.toggle} timeout="auto" unmountOnExit>
                   <CardContent>
-                    <Typography>{user.first_name}</Typography>
-                    <Typography>{user.last_name}</Typography>
-                    <Button>EDIT</Button>
+                    <Typography>FIRST NAME :{user.first_name}</Typography>
+                    <Typography>LAST NAME : {user.last_name}</Typography>
+                    <Typography>HOME PHONE :{user.home_phone}</Typography>
+                    <Typography>WORK PHONE :{user.work_phone}</Typography>
+                    <Typography>EMAIL :{user.email}</Typography>
+                    <Typography>CITY :{user.city}</Typography>
+                    <Typography>
+                      STATE/PROVINCE:{user.state_or_province}
+                    </Typography>
+                    <Typography>POSTAL CODE :{user.postal_code}</Typography>
+                    <Typography>COUNTRY :{user.country}</Typography>
                     <Button
                       onClick={() => {
-                        console.log("DELETE WITH DATA");
-                        console.log(
-                          user.userid,
-                          user.first_name,
-                          user.last_name
-                        );
+                        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa");
+                        //console.log("from homepage", addContact);
+                        handleDialogEdit(true);
+                        console.log("usesssssssr", user);
+                        handleEditContact(user);
+                      }}
+                    >
+                      EDIT
+                    </Button>
+                    <Button
+                      onClick={() => {
                         deleteContact(
                           user.userid,
                           user.first_name,
@@ -200,7 +219,7 @@ export default function HomePage() {
             ))}
       </Box>
 
-      {/* DIALOG */}
+      {/* ADD CONTACT DIALOG */}
       <Dialog
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
@@ -212,6 +231,21 @@ export default function HomePage() {
         >
           <AddContactDialog />
         </AddContactContext.Provider>
+      </Dialog>
+
+      {/* EDIT CONTACT DIALOG */}
+      <Dialog open={expandDialogEdit} onClose={() => handleDialogEdit(false)}>
+        <EditContactContext.Provider
+          value={{
+            handleContact,
+            user,
+            handleDialogEdit,
+            handleAllContacts,
+            editContact
+          }}
+        >
+          <EditContactDialog />
+        </EditContactContext.Provider>
       </Dialog>
     </div>
   );
