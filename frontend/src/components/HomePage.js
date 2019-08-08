@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { Redirect } from "react-router-dom";
 import { UserContext } from "./../context/UserContext";
 import axios from "axios";
+import update from "immutability-helper";
 
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
@@ -32,11 +33,12 @@ export default function HomePage() {
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      flexDirection: "column",
+      flexWrap: "wrap",
       padding: "20px"
     },
     card: {
-      width: "375px"
+      width: "375px",
+      margin: "26px"
     }
   };
 
@@ -49,6 +51,31 @@ export default function HomePage() {
 
   const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
 
+  useEffect(() => {
+    document.body.style.background = "#e2e2e2";
+
+    console.log("contacts", contacts);
+    console.log("prevcontacts", prevContacts);
+    if (!prevContacts || contacts == prevContacts) {
+      axios
+        .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
+        .then(res => {
+          let newObj = res.data;
+          //add toggle to each object
+          newObj.map(e => {
+            if (!e.toggle) {
+              e.toggle = false;
+            }
+          });
+          console.log("NEWOBJECT", newObj);
+          handleAllContacts(newObj);
+          //console.log("DUURING");
+          //console.log("USERR", user);
+        })
+        .catch(err => console.log(err));
+    }
+  });
+
   function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {
@@ -58,29 +85,6 @@ export default function HomePage() {
   }
 
   const prevContacts = usePrevious(contacts);
-  function usePrevious(value) {
-    const ref = useRef();
-    useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  }
-
-  useEffect(() => {
-    document.body.style.background = "#e2e2e2";
-
-    if (contacts !== prevContacts) {
-      axios
-        .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
-        .then(res => {
-          console.log("DATTTA", res.data);
-          handleAllContacts(res.data);
-          console.log("DUURING");
-          console.log("USERR", user);
-        })
-        .catch(err => console.log(err));
-    }
-  });
 
   console.log(loggedIn);
   console.log(user);
@@ -113,22 +117,30 @@ export default function HomePage() {
         {/* CONTENT */}
         {!contacts
           ? null
-          : contacts.map(user => (
+          : contacts.map((user, index) => (
               <Card style={styles.card}>
                 <CardHeader
-                  title="Bill Gates"
+                  title={`${user.first_name} ${user.last_name}`}
                   action={
                     <IconButton
                       onClick={() => {
-                        handeExpandBtn(!expandBtn);
-                        console.log(addContact);
+                        var state1 = contacts;
+                        var updateToggle = contacts[index].toggle;
+                        var state2 = update(state1, {
+                          [index]: { toggle: { $set: !updateToggle } }
+                        });
+                        handleAllContacts(state2);
+                        //console.log(contacts[index].toggle);
+                        console.log(state1);
+                        console.log(state2);
+                        //console.log(addContact);
                       }}
                     >
                       <ExpandMoreIcon />
                     </IconButton>
                   }
                 />
-                <Collapse in={expandBtn} timeout="auto" unmountOnExit>
+                <Collapse in={user.toggle} timeout="auto" unmountOnExit>
                   <CardContent>
                     <Typography>{user.first_name}</Typography>
                     <Typography>{user.last_name}</Typography>
