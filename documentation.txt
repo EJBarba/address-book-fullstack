@@ -21,6 +21,9 @@ npm install --save material-ui-icons
 🐨 npm i --save material-ui-search-bar
 🐨 npm i --save material-ui-search-bar@beta
 
+//localStorage, just easier
+🐨 npm install local-storage --save
+
 
 BACKEND (Node.js)
 

@@ -30,6 +30,7 @@ import {
 } from "./../context/UserContext";
 
 import SearchBar from "material-ui-search-bar";
+import * as ls from "local-storage";
 
 export default function HomePage() {
   //styling
@@ -66,8 +67,15 @@ export default function HomePage() {
   const [sort, handleSort] = useState("DEFAULT");
   const [searchVal, handleSearch] = useState("");
   const tokenObject = { Authorization: `Bearer ${user.token}` };
+
+  var localUser = ls("lsUser");
+  var localLoggedIn = ls("lsLoggedIn");
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
+
+    //persist data using localstorage
+    handleUser(localUser);
+    handleLoggedIn(localLoggedIn);
 
     if (
       searchVal.length == 0 &&
@@ -167,8 +175,11 @@ export default function HomePage() {
       .catch(err => console.log(err));
   }
 
-  return !loggedIn ? (
-    <Redirect to="/redirect" />
+  return !user || !localLoggedIn ? (
+    <React.Fragment>
+      {ls.clear()}
+      <Redirect to="/redirect" />
+    </React.Fragment>
   ) : (
     <div>
       <AppBar position="static">
@@ -186,6 +197,7 @@ export default function HomePage() {
             onClick={() => {
               handleUser({});
               handleLoggedIn(false);
+              ls.set("lsLoggedIn", false);
             }}
           >
             Log Out
@@ -217,7 +229,7 @@ export default function HomePage() {
         {!contacts
           ? null
           : contacts.map((user, index) => (
-              <Card style={styles.card}>
+              <Card style={styles.card} key={index}>
                 <CardHeader
                   title={`${user.first_name} ${user.last_name}`}
                   action={

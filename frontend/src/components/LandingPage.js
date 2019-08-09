@@ -14,6 +14,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Collapse from "@material-ui/core/Collapse";
 import Button from "@material-ui/core/Button";
 
+import * as ls from "local-storage";
+
 export default function LandingPage() {
   const styles = {
     container: {
@@ -136,6 +138,8 @@ export default function LandingPage() {
           let token = res.data.token;
           let tokenObject = { Authorization: `Bearer ${token}` };
           res.headers = { ...res.headers, ...tokenObject };
+          ls("lsUser", res.data);
+          ls("lsLoggedIn", true);
 
           axios
             .get("http://localhost:3001/api/debug", { headers: tokenObject })
