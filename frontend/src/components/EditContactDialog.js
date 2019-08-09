@@ -46,6 +46,7 @@ export default function EditContactDialog() {
     postalCode: editContact.postal_code,
     country: editContact.country
   });
+  const tokenObject = { Authorization: `Bearer ${user.token}` };
   const addVal = e => {
     setVal({ ...val, [e.target.name]: e.target.value });
   };
@@ -56,18 +57,26 @@ export default function EditContactDialog() {
     console.log(editContact);
     //axios
     axios
-      .patch("http://localhost:3001/api/editcontact", {
-        contactid: editContact.contactid,
-        first_name: val.firstName,
-        last_name: val.lastName,
-        home_phone: val.homePhone,
-        work_phone: val.workPhone,
-        email: val.email,
-        city: val.city,
-        state_or_province: val.stateOrProvince,
-        postal_code: val.postalCode,
-        country: val.country
-      })
+      .patch(
+        "http://localhost:3001/api/editcontact",
+        {
+          contactid: editContact.contactid,
+          first_name: val.firstName,
+          last_name: val.lastName,
+          home_phone: val.homePhone,
+          work_phone: val.workPhone,
+          email: val.email,
+          city: val.city,
+          state_or_province: val.stateOrProvince,
+          postal_code: val.postalCode,
+          country: val.country
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+      )
       .then(res => {
         console.log("axios ->", res.data);
         //close dialog on submit
@@ -76,7 +85,9 @@ export default function EditContactDialog() {
       .catch(err => console.log(err));
 
     axios
-      .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
+      .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`, {
+        headers: tokenObject
+      })
       .then(res => {
         console.log("DATTTA", res.data);
         handleAllContacts(res.data);
@@ -85,6 +96,7 @@ export default function EditContactDialog() {
       .catch(err => console.log(err));
     e.preventDefault();
   }
+  console.log(user);
   return (
     <Box style={styles.dialog}>
       <h2 id="modal-title">Edit Contact</h2>

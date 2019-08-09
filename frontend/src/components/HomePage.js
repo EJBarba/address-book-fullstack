@@ -30,8 +30,6 @@ import {
 } from "./../context/UserContext";
 
 import SearchBar from "material-ui-search-bar";
-import AutoComplete from "material-ui/AutoComplete";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 
 export default function HomePage() {
   //styling
@@ -65,7 +63,7 @@ export default function HomePage() {
 
   const [sort, handleSort] = useState("DEFAULT");
   const [searchVal, handleSearch] = useState("");
-
+  const tokenObject = { Authorization: `Bearer ${user.token}` };
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
 
@@ -77,7 +75,9 @@ export default function HomePage() {
       (!prevContacts || contacts == prevContacts)
     ) {
       axios
-        .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
+        .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`, {
+          headers: tokenObject
+        })
         .then(res => {
           let newObj = res.data;
           //add toggle to each object
@@ -99,7 +99,9 @@ export default function HomePage() {
       (!prevContacts || contacts == prevContacts)
     ) {
       axios
-        .get(`http://localhost:3001/api/sort?userId=${user.id}&sort=${sort}`)
+        .get(`http://localhost:3001/api/sort?userId=${user.id}&sort=${sort}`, {
+          headers: tokenObject
+        })
         .then(res => {
           handleAllContacts(res.data);
         })
@@ -109,10 +111,16 @@ export default function HomePage() {
     if (searchVal.length > 0 && (!prevContacts || contacts == prevContacts)) {
       console.log(user.id, searchVal);
       axios
-        .post(`http://localhost:3001/api/searchbox`, {
-          search: searchVal,
-          userId: user.id
-        })
+        .post(
+          `http://localhost:3001/api/searchbox`,
+          {
+            search: searchVal,
+            userId: user.id
+          },
+          {
+            headers: tokenObject
+          }
+        )
         .then(res => {
           console.log("SSEEARRCH", res);
           handleAllContacts(res.data);
@@ -138,6 +146,9 @@ export default function HomePage() {
   function deleteContact(userid, first_name, last_name) {
     axios
       .delete("http://localhost:3001/api/deletecontact", {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        },
         data: {
           userid: userid,
           first_name: first_name,
@@ -147,7 +158,9 @@ export default function HomePage() {
       .then(data => {
         console.log(data);
         axios
-          .get(`http://localhost:3001/api/getallcontacts?userId=${userid}`)
+          .get(`http://localhost:3001/api/getallcontacts?userId=${userid}`, {
+            headers: tokenObject
+          })
           .then(res => {
             let newObj = res.data;
             //add toggle to each object

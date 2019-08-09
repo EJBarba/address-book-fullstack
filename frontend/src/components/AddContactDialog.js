@@ -42,6 +42,7 @@ export default function AddContactDialog() {
     postalCode: "",
     country: ""
   });
+  const tokenObject = { Authorization: `Bearer ${user.token}` };
   const addVal = e => {
     setVal({ ...val, [e.target.name]: e.target.value });
   };
@@ -51,17 +52,25 @@ export default function AddContactDialog() {
 
     //axios
     axios
-      .post(`http://localhost:3001/api/addcontact?userId=${user.id}`, {
-        first_name: val.firstName,
-        last_name: val.lastName,
-        home_phone: val.homePhone,
-        work_phone: val.workPhone,
-        email: val.email,
-        city: val.city,
-        state_or_province: val.stateOrProvince,
-        postal_code: val.postalCode,
-        country: val.country
-      })
+      .post(
+        `http://localhost:3001/api/addcontact?userId=${user.id}`,
+        {
+          first_name: val.firstName,
+          last_name: val.lastName,
+          home_phone: val.homePhone,
+          work_phone: val.workPhone,
+          email: val.email,
+          city: val.city,
+          state_or_province: val.stateOrProvince,
+          postal_code: val.postalCode,
+          country: val.country
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+      )
       .then(res => {
         console.log("axios ->", res);
         //close dialog on submit
@@ -70,7 +79,9 @@ export default function AddContactDialog() {
       .catch(err => console.log(err));
 
     axios
-      .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
+      .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`, {
+        headers: tokenObject
+      })
       .then(res => {
         console.log("DATTTA", res.data);
         handleAllContacts(res.data);
