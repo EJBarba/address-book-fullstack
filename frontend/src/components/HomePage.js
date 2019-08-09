@@ -4,6 +4,8 @@ import { UserContext } from "./../context/UserContext";
 import axios from "axios";
 import update from "immutability-helper";
 
+import SortMenu from "./SortMenu";
+
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -23,7 +25,8 @@ import AddContactDialog from "./AddContactDialog";
 import EditContactDialog from "./EditContactDialog";
 import {
   AddContactContext,
-  EditContactContext
+  EditContactContext,
+  SortContext
 } from "./../context/UserContext";
 
 export default function HomePage() {
@@ -56,12 +59,14 @@ export default function HomePage() {
 
   const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
 
+  const [sort, handleSort] = useState("DEFAULT");
+
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
 
     console.log("contacts", contacts);
     console.log("prevcontacts", prevContacts);
-    if (!prevContacts || contacts == prevContacts) {
+    if (sort === "DEFAULT" && (!prevContacts || contacts == prevContacts)) {
       axios
         .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
         .then(res => {
@@ -76,6 +81,14 @@ export default function HomePage() {
           handleAllContacts(newObj);
           //console.log("DUURING");
           //console.log("USERR", user);
+        })
+        .catch(err => console.log(err));
+    }
+    if (sort !== "DEFAULT" && (!prevContacts || contacts == prevContacts)) {
+      axios
+        .get(`http://localhost:3001/api/sort?userId=${user.id}&sort=${sort}`)
+        .then(res => {
+          handleAllContacts(res.data);
         })
         .catch(err => console.log(err));
     }
@@ -151,6 +164,18 @@ export default function HomePage() {
           </Button>
         </Toolbar>
       </AppBar>
+      {/* SORT AND SEARCH */}
+      <Box style={styles.box}>
+        <SortContext.Provider
+          value={{
+            user,
+            handleAllContacts,
+            handleSort
+          }}
+        >
+          <SortMenu />
+        </SortContext.Provider>
+      </Box>
       <Box style={styles.box}>
         {/* CONTENT */}
         {!contacts
