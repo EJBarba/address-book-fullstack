@@ -47,7 +47,6 @@ export default function AddContactDialog() {
     setVal({ ...val, [e.target.name]: e.target.value });
   };
   function handleForm(e) {
-    console.log("from dialog", val, user);
     handleContact(val);
 
     //axios
@@ -72,7 +71,6 @@ export default function AddContactDialog() {
         }
       )
       .then(res => {
-        console.log("axios ->", res);
         //close dialog on submit
         handleDialog(false);
       })
@@ -83,9 +81,7 @@ export default function AddContactDialog() {
         headers: tokenObject
       })
       .then(res => {
-        console.log("DATTTA", res.data);
         handleAllContacts(res.data);
-        console.log("USERR", user);
       })
       .catch(err => console.log(err));
     e.preventDefault();

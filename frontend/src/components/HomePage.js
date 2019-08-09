@@ -59,7 +59,9 @@ export default function HomePage() {
   const [editContact, handleEditContact] = useState();
   const [contacts, handleAllContacts] = useState([]);
 
-  const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
+  const { loggedIn, handleLoggedIn, user, handleUser } = useContext(
+    UserContext
+  );
 
   const [sort, handleSort] = useState("DEFAULT");
   const [searchVal, handleSearch] = useState("");
@@ -67,8 +69,6 @@ export default function HomePage() {
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
 
-    console.log("contacts", contacts);
-    console.log("prevcontacts", prevContacts);
     if (
       searchVal.length == 0 &&
       sort === "DEFAULT" &&
@@ -86,10 +86,7 @@ export default function HomePage() {
               e.toggle = false;
             }
           });
-          console.log("NEWOBJECT", newObj);
           handleAllContacts(newObj);
-          //console.log("DUURING");
-          //console.log("USERR", user);
         })
         .catch(err => console.log(err));
     }
@@ -109,7 +106,6 @@ export default function HomePage() {
     }
 
     if (searchVal.length > 0 && (!prevContacts || contacts == prevContacts)) {
-      console.log(user.id, searchVal);
       axios
         .post(
           `http://localhost:3001/api/searchbox`,
@@ -122,7 +118,6 @@ export default function HomePage() {
           }
         )
         .then(res => {
-          console.log("SSEEARRCH", res);
           handleAllContacts(res.data);
         })
         .catch(err => console.log(err));
@@ -139,9 +134,6 @@ export default function HomePage() {
 
   const prevContacts = usePrevious(contacts);
 
-  console.log(loggedIn);
-  console.log(user);
-
   //DELETE CARD
   function deleteContact(userid, first_name, last_name) {
     axios
@@ -156,7 +148,6 @@ export default function HomePage() {
         }
       })
       .then(data => {
-        console.log(data);
         axios
           .get(`http://localhost:3001/api/getallcontacts?userId=${userid}`, {
             headers: tokenObject
@@ -169,10 +160,7 @@ export default function HomePage() {
                 e.toggle = false;
               }
             });
-            console.log("NEWOBJECT", newObj);
             handleAllContacts(newObj);
-            //console.log("DUURING");
-            //console.log("USERR", user);
           })
           .catch(err => console.log(err));
       })
@@ -185,21 +173,21 @@ export default function HomePage() {
     <div>
       <AppBar position="static">
         <Toolbar style={styles.appBar}>
-          <IconButton
-            edge="start"
-            //className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-          >
+          <IconButton edge="start" color="inherit" aria-label="menu">
             <PersonAdd
               onClick={() => {
-                console.log("from homepage", addContact);
                 handleDialog(true);
               }}
             />
           </IconButton>
           <Typography variant="h6">Welcome, {user.username}!</Typography>
-          <Button color="inherit" onClick={() => handleLoggedIn(false)}>
+          <Button
+            color="inherit"
+            onClick={() => {
+              handleUser({});
+              handleLoggedIn(false);
+            }}
+          >
             Log Out
           </Button>
         </Toolbar>
@@ -241,10 +229,6 @@ export default function HomePage() {
                           [index]: { toggle: { $set: !updateToggle } }
                         });
                         handleAllContacts(state2);
-                        //console.log(contacts[index].toggle);
-                        console.log(state1);
-                        console.log(state2);
-                        //console.log(addContact);
                       }}
                     >
                       <ExpandMoreIcon />
@@ -266,10 +250,7 @@ export default function HomePage() {
                     <Typography>COUNTRY :{user.country}</Typography>
                     <Button
                       onClick={() => {
-                        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaa");
-                        //console.log("from homepage", addContact);
                         handleDialogEdit(true);
-                        console.log("usesssssssr", user);
                         handleEditContact(user);
                       }}
                     >

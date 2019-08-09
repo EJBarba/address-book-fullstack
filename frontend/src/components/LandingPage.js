@@ -102,16 +102,9 @@ export default function LandingPage() {
 
   const addRegisterVal = e => {
     setVal({ ...formVal, [e.target.name]: e.target.value });
-    console.log(formVal);
   };
 
   function handleLogin(e) {
-    console.log(
-      "usernameLG->",
-      formVal.usernameLG,
-      "passwordLG->",
-      formVal.passwordLG
-    );
     if (!formVal.usernameLG && !formVal.passwordLG) {
       toggleFHT({
         ...fhtError,
@@ -139,21 +132,16 @@ export default function LandingPage() {
           password: formVal.passwordLG
         })
         .then(res => {
-          console.log("data ->", res.data);
-          console.log("before", user);
           handleUser(res.data);
-          console.log("after", user);
           let token = res.data.token;
           let tokenObject = { Authorization: `Bearer ${token}` };
           res.headers = { ...res.headers, ...tokenObject };
-          console.log("headers -> ", res.headers);
+
           axios
             .get("http://localhost:3001/api/debug", { headers: tokenObject })
             .then(res => {
-              console.log(res);
               handleAuth(true);
               handleLoggedIn(true);
-              console.log("AUTH axious--> ", isAuth);
             })
             .catch(error => console.log(error));
         })
@@ -166,15 +154,6 @@ export default function LandingPage() {
     e.preventDefault();
   }
   function handleRegister(e) {
-    console.log(
-      "usernameRG->",
-      formVal.usernameRG,
-      "password1RG->",
-      formVal.password1RG,
-      "password2RG->",
-      formVal.password2RG
-    );
-
     //All Textboxes
     if (!formVal.usernameRG && !formVal.password1RG && !formVal.password2RG) {
       toggleFHT({
@@ -237,7 +216,6 @@ export default function LandingPage() {
           password: formVal.password1RG
         })
         .then(data => {
-          console.log("data ->", data);
           alert("Registered Successfully");
           changeForm();
         })

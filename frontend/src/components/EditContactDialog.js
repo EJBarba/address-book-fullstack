@@ -51,11 +51,6 @@ export default function EditContactDialog() {
     setVal({ ...val, [e.target.name]: e.target.value });
   };
   function handleForm(e) {
-    console.log(val);
-    //console.log("from dialog", val, user);
-    //handleContact(val);
-    console.log(editContact);
-    //axios
     axios
       .patch(
         "http://localhost:3001/api/editcontact",
@@ -78,7 +73,6 @@ export default function EditContactDialog() {
         }
       )
       .then(res => {
-        console.log("axios ->", res.data);
         //close dialog on submit
         handleDialogEdit(false);
       })
@@ -89,14 +83,11 @@ export default function EditContactDialog() {
         headers: tokenObject
       })
       .then(res => {
-        console.log("DATTTA", res.data);
         handleAllContacts(res.data);
-        console.log("USERR", user);
       })
       .catch(err => console.log(err));
     e.preventDefault();
   }
-  console.log(user);
   return (
     <Box style={styles.dialog}>
       <h2 id="modal-title">Edit Contact</h2>
