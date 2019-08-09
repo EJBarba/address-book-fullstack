@@ -29,6 +29,10 @@ import {
   SortContext
 } from "./../context/UserContext";
 
+import SearchBar from "material-ui-search-bar";
+import AutoComplete from "material-ui/AutoComplete";
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+
 export default function HomePage() {
   //styling
   const styles = {
@@ -60,13 +64,18 @@ export default function HomePage() {
   const { loggedIn, handleLoggedIn, user } = useContext(UserContext);
 
   const [sort, handleSort] = useState("DEFAULT");
+  const [searchVal, handleSearch] = useState("");
 
   useEffect(() => {
     document.body.style.background = "#e2e2e2";
 
     console.log("contacts", contacts);
     console.log("prevcontacts", prevContacts);
-    if (sort === "DEFAULT" && (!prevContacts || contacts == prevContacts)) {
+    if (
+      searchVal.length == 0 &&
+      sort === "DEFAULT" &&
+      (!prevContacts || contacts == prevContacts)
+    ) {
       axios
         .get(`http://localhost:3001/api/getallcontacts?userId=${user.id}`)
         .then(res => {
@@ -84,10 +93,28 @@ export default function HomePage() {
         })
         .catch(err => console.log(err));
     }
-    if (sort !== "DEFAULT" && (!prevContacts || contacts == prevContacts)) {
+    if (
+      searchVal.length == 0 &&
+      sort !== "DEFAULT" &&
+      (!prevContacts || contacts == prevContacts)
+    ) {
       axios
         .get(`http://localhost:3001/api/sort?userId=${user.id}&sort=${sort}`)
         .then(res => {
+          handleAllContacts(res.data);
+        })
+        .catch(err => console.log(err));
+    }
+
+    if (searchVal.length > 0 && (!prevContacts || contacts == prevContacts)) {
+      console.log(user.id, searchVal);
+      axios
+        .post(`http://localhost:3001/api/searchbox`, {
+          search: searchVal,
+          userId: user.id
+        })
+        .then(res => {
+          console.log("SSEEARRCH", res);
           handleAllContacts(res.data);
         })
         .catch(err => console.log(err));
@@ -175,6 +202,14 @@ export default function HomePage() {
         >
           <SortMenu />
         </SortContext.Provider>
+        <SearchBar
+          onChange={e => handleSearch(e)}
+          onRequestSearch={e => handleSearch(e)}
+          style={{
+            margin: "0 auto",
+            maxWidth: 800
+          }}
+        />
       </Box>
       <Box style={styles.box}>
         {/* CONTENT */}

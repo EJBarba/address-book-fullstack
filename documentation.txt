@@ -5,7 +5,7 @@
 FRONTEND
 // material ui
 🐨 npm install @material-ui/core
-
+🐨 npm install material-ui@latest
 //icons
 npm install --save material-ui-icons
 //Routing
@@ -15,7 +15,11 @@ npm install --save material-ui-icons
 🐨 npm install axios --save
 
 //helper for immutable data
-npm install immutability-helper --save
+🐨 npm install immutability-helper --save
+
+//a nice search bar
+🐨 npm i --save material-ui-search-bar
+🐨 npm i --save material-ui-search-bar@beta
 
 
 BACKEND (Node.js)

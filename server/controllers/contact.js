@@ -114,11 +114,26 @@ function sort(req, res) {
     .catch(err => console.log(err));
 }
 
+function searchBox(req, res) {
+  const db = req.app.get("db");
+  const { search, userId } = req.body;
+
+  db.query(
+    `select * from addressbook,contact where addressbook.userid = ${userId} 
+  and addressbook.contactid is not null 
+  and contact.id = addressbook.contactid
+  and contact.first_name Like '%${search}%'`
+  )
+    .then(data => res.status(200).json(data))
+    .catch(err => console.log(err));
+}
+
 module.exports = {
   addContact,
   editContact,
   deleteContact,
   searchContact,
   getAllContacts,
-  sort
+  sort,
+  searchBox
 };

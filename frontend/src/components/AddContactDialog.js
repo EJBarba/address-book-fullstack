@@ -63,7 +63,7 @@ export default function AddContactDialog() {
         country: val.country
       })
       .then(res => {
-        console.log("axios ->", res.data);
+        console.log("axios ->", res);
         //close dialog on submit
         handleDialog(false);
       })

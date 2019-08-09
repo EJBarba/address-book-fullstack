@@ -28,6 +28,7 @@ massive({
   app.get("/api/searchcontact", contact.searchContact);
   app.get("/api/getallcontacts", contact.getAllContacts);
   app.get("/api/sort", contact.sort);
+  app.post("/api/searchbox", contact.searchBox);
 
   app.listen(port, () => {
     console.log(`Server listening (0  0 3) on port: ${port}`);
